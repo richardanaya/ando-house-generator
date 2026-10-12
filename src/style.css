@@ -16,6 +16,8 @@ html, body, #app {
   overflow: hidden;
 }
 
+html.bare #panel { display: none; }
+
 #view {
   display: block;
   width: 100%;

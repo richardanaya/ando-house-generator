@@ -1,6 +1,7 @@
 import {
   CanvasTexture,
   Color,
+  DoubleSide,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   RepeatWrapping,
@@ -213,25 +214,39 @@ export function createSteelMaterial(): MeshStandardMaterial {
   return new MeshStandardMaterial({ color: '#232527', metalness: 0.86, roughness: 0.34 });
 }
 
-export function createGlassMaterial(): MeshPhysicalMaterial {
+/** Clear pane for a cut that light must pass through. */
+export function createClearGlassMaterial(): MeshPhysicalMaterial {
   return new MeshPhysicalMaterial({
-    color: '#d5e0e2',
+    color: '#eef3f4',
     metalness: 0,
-    roughness: 0.045,
-    transmission: 0.92,
-    thickness: 0.04,
-    ior: 1.45,
+    roughness: 0.03,
     transparent: true,
-    envMapIntensity: 1.15,
+    opacity: 0.14,
+    envMapIntensity: 0.8,
+    depthWrite: false,
+    side: DoubleSide,
+  });
+}
+
+/** Darker pane set on the face of a deep volume. */
+export function createDarkGlassMaterial(): MeshPhysicalMaterial {
+  return new MeshPhysicalMaterial({
+    color: '#6f868c',
+    metalness: 0.04,
+    roughness: 0.08,
+    transparent: true,
+    opacity: 0.72,
+    envMapIntensity: 1,
+    side: DoubleSide,
   });
 }
 
 export function createBasinMaterial(): MeshStandardMaterial {
   return new MeshStandardMaterial({
-    color: '#5d6c70',
-    metalness: 0.78,
-    roughness: 0.07,
-    envMapIntensity: 1,
+    color: '#8ea3a6',
+    metalness: 0.42,
+    roughness: 0.16,
+    envMapIntensity: 0.9,
   });
 }
 

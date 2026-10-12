@@ -11,6 +11,10 @@ const canvas = document.createElement('canvas');
 canvas.id = 'view';
 app.append(canvas);
 
+if (new URLSearchParams(window.location.search).get('bare') === '1') {
+  document.documentElement.classList.add('bare');
+}
+
 const initial = paramsFromSearch(window.location.search);
 const initialSun = sunFromSearch(window.location.search);
 

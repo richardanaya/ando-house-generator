@@ -27,7 +27,8 @@ export function buildModel(
   house: House,
   materials: {
     concrete: MeshStandardMaterial;
-    glass: MeshPhysicalMaterial;
+    glassClear: MeshPhysicalMaterial;
+    glassDark: MeshPhysicalMaterial;
     steel: MeshStandardMaterial;
     gravel: MeshStandardMaterial;
     court: MeshStandardMaterial;
@@ -36,7 +37,8 @@ export function buildModel(
   },
 ): BuiltModel {
   const concretePieces: BufferGeometry[] = [];
-  const glassPieces: BufferGeometry[] = [];
+  const clearPieces: BufferGeometry[] = [];
+  const darkPieces: BufferGeometry[] = [];
   const steelPieces: BufferGeometry[] = [];
   const shaftMaterials: MeshBasicMaterial[] = [];
   const content = new Group();
@@ -63,7 +65,17 @@ export function buildModel(
       concretePieces.push(boxPiece(piece, house.panel.w, house.panel.h));
     }
     for (const op of hosted) {
-      addOpeningMesh(solid, op, house, cut.includes(op), crossShaft, glassPieces, steelPieces, content, shaftMaterials);
+      addOpeningMesh(
+        solid,
+        op,
+        house,
+        cut.includes(op),
+        crossShaft,
+        cut.includes(op) ? clearPieces : darkPieces,
+        steelPieces,
+        content,
+        shaftMaterials,
+      );
     }
   }
 
@@ -73,7 +85,8 @@ export function buildModel(
   }
 
   pushMerged(content, concretePieces, materials.concrete, true);
-  pushMerged(content, glassPieces, materials.glass, false);
+  pushMerged(content, clearPieces, materials.glassClear, false);
+  pushMerged(content, darkPieces, materials.glassDark, false);
   pushMerged(content, steelPieces, materials.steel, true);
 
   const ground = new Mesh(new PlaneGeometry(220, 220), materials.ground);
@@ -91,8 +104,7 @@ export function buildModel(
   pad.receiveShadow = true;
   content.add(pad);
 
-  const courtMat = materials.court;
-  const court = new Mesh(new PlaneGeometry(Math.max(0.2, house.court.w - 0.08), Math.max(0.2, house.court.d - 0.08)), courtMat);
+  const court = new Mesh(new PlaneGeometry(Math.max(0.2, house.court.w - 0.08), Math.max(0.2, house.court.d - 0.08)), materials.court);
   court.rotation.x = -Math.PI / 2;
   court.position.set(house.court.x + house.court.w / 2, 0.02, house.court.z + house.court.d / 2);
   court.receiveShadow = true;

@@ -364,8 +364,9 @@ function generateUnits(plan: Plan, params: GenerateParams): {
     if (placed) budget -= 1;
   }
 
-  if (budget > 0 && plan.wantPavilion && court.w >= 28 && court.d >= 28) {
-    const ps = 18;
+  if (budget > 0 && court.w >= 28 && court.d >= 28) {
+    const ps = plan.wantPavilion ? 18 : 15;
+    const zShift = plan.wantPavilion ? 4 : 6;
     add(
       {
         id: 'pavilion',
@@ -373,7 +374,7 @@ function generateUnits(plan: Plan, params: GenerateParams): {
         shape: plan.pavilionRound ? 'cylinder' : 'box',
         x: court.x + Math.floor((court.w - ps) / 2),
         y: 0,
-        z: court.z + 4,
+        z: court.z + zShift,
         w: ps,
         h: STORY,
         d: ps,
@@ -589,7 +590,7 @@ export function generateHouse(partial: Partial<GenerateParams> = {}): House {
   const waters: WaterFeature[] = model.waters.map((water) => ({
     id: water.id,
     ...scaleRect(water, unit),
-    y: 0.28 * unit,
+    y: 0.55 * unit,
     depth: 0.12 * unit,
     shape: water.shape,
   }));

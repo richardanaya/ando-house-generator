@@ -2,7 +2,6 @@ import {
   ACESFilmicToneMapping,
   AmbientLight,
   BackSide,
-  Color,
   DirectionalLight,
   Fog,
   HemisphereLight,
@@ -24,7 +23,8 @@ import {
   createBasinMaterial,
   createConcreteMaps,
   createConcreteMaterial,
-  createGlassMaterial,
+  createClearGlassMaterial,
+  createDarkGlassMaterial,
   createGrassMaterial,
   createGravelMaterial,
   createSteelMaterial,
@@ -41,7 +41,7 @@ export class AndoScene {
   readonly controls: OrbitControls;
 
   private readonly sun = new DirectionalLight(0xfff2dd, 4);
-  private readonly hemi = new HemisphereLight(0xc5d4e0, 0x8a8178, 0.42);
+  private readonly hemi = new HemisphereLight(0xc5d4e0, 0x8a8178, 0.28);
   private readonly ambient = new AmbientLight(0xfff6ee, 0.08);
   private built: BuiltModel | null = null;
   private water: BuiltWater | null = null;
@@ -53,7 +53,8 @@ export class AndoScene {
   private running = true;
 
   private readonly concrete;
-  private readonly glass;
+  private readonly glassClear;
+  private readonly glassDark;
   private readonly steel;
   private readonly gravel;
   private readonly groundMat;
@@ -68,7 +69,7 @@ export class AndoScene {
     this.renderer.setClearColor(0xe6d5c6, 1);
     this.renderer.outputColorSpace = SRGBColorSpace;
     this.renderer.toneMapping = ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.toneMappingExposure = 1.08;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFSoftShadowMap;
 
@@ -84,12 +85,12 @@ export class AndoScene {
     const maps = createConcreteMaps();
     tuneAnisotropy(maps, this.renderer);
     this.concrete = createConcreteMaterial(maps);
-    this.glass = createGlassMaterial();
+    this.glassClear = createClearGlassMaterial();
+    this.glassDark = createDarkGlassMaterial();
     this.steel = createSteelMaterial();
     this.gravel = createGravelMaterial({ seed: 3, repeat: 6, color: '#b7b2aa' });
     this.groundMat = createGravelMaterial({ seed: 2, repeat: 22, color: '#8a857e' });
-    this.court = this.concrete.clone();
-    this.court.color = new Color('#a9a49c');
+    this.court = createGravelMaterial({ seed: 5, repeat: 3, color: '#9a958e' });
     this.grass = createGrassMaterial();
     this.basin = createBasinMaterial();
 
@@ -105,7 +106,7 @@ export class AndoScene {
     this.sun.castShadow = true;
     this.sun.shadow.mapSize.set(2048, 2048);
     this.sun.shadow.bias = -0.00018;
-    this.sun.shadow.normalBias = 0.035;
+    this.sun.shadow.normalBias = 0.02;
     this.sun.shadow.radius = 2.5;
     this.scene.add(this.sun, this.sun.target);
 
@@ -125,7 +126,8 @@ export class AndoScene {
 
     this.built = buildModel(house, {
       concrete: this.concrete,
-      glass: this.glass,
+      glassClear: this.glassClear,
+      glassDark: this.glassDark,
       steel: this.steel,
       gravel: this.gravel,
       court: this.court,
@@ -170,8 +172,12 @@ export class AndoScene {
     this.radius = span * 0.78;
     const side = house.entrySide === 'east' ? 1 : -1;
     const dist = span * 1.05;
-    this.camera.position.set(center.x + dist * 0.78 * side, Math.max(5.5, maxY * 0.48 + span * 0.16), center.z + dist * 0.72);
-    this.controls.target.set(center.x - side * span * 0.02, maxY * 0.3, center.z - span * 0.05);
+    this.camera.position.set(
+      center.x + dist * 0.92 * side,
+      Math.max(7.5, maxY * 0.72 + span * 0.22),
+      center.z + dist * 0.88,
+    );
+    this.controls.target.set(center.x, maxY * 0.28, center.z - span * 0.04);
     this.controls.update();
   }
 

@@ -39,7 +39,7 @@ function reflectingPool(feature: WaterFeature, renderer: WebGLRenderer): Reflect
     clipBias: 0.003,
     textureWidth: Math.min(1024, Math.floor(renderer.domElement.width * pixel) || 768),
     textureHeight: Math.min(1024, Math.floor(renderer.domElement.height * pixel) || 768),
-    color: 0x8ea0a3,
+    color: 0xc5d2d4,
   });
   reflector.rotation.x = -Math.PI / 2;
   reflector.position.set(feature.x + feature.w / 2, feature.y, feature.z + feature.d / 2);
