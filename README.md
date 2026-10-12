@@ -71,10 +71,11 @@ The generator throws if a house fails these checks.
 | `npm run dev` | Vite dev server |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` | Vitest |
-| `npm run build` | Typecheck and static build into `dist/` |
-| `npm run preview` | Serve `dist/` |
+| `npm run build` | Typecheck, build, and publish `index.html` plus `assets/` |
+| `npm run preview` | Serve the production bundle |
+| `npm run check:bundle` | Fail if the committed Pages bundle does not match the build |
 
-GitHub Actions runs typecheck, tests, and the build on pull requests. A second workflow publishes `dist/` to GitHub Pages when `main` updates. The site uses relative asset paths, so project pages and a local preview both work.
+`npm run dev` serves `index.dev.html`, the TypeScript entry. GitHub Pages deploys the `main` branch root, so the committed `index.html` points at the built bundle with relative `./assets/` URLs. Actions runs typecheck, tests, and the build, then fails if that bundle was not committed. A `.nojekyll` file keeps Pages from filtering those assets.
 
 ## Limitations
 
